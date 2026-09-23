@@ -11,12 +11,13 @@ public interface UserRepository {
     User create(User user);
 
     Optional<User> findByEmail(String email);
+    boolean existsByEmail(String email);
 
-    Optional<User> findById(UUID id);
-
-    List<User> findAll();
-
+//    Optional<User> findById(UUID id);
+//
+//    List<User> findAll();
+//
     void update(User user);
-
-    void delete(UUID id);
+   void updatePassword(User user);
+//    void delete(UUID id);
 }

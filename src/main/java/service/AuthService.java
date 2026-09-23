@@ -2,10 +2,12 @@ package service;
 import exception.EmailAlreadyExistsException;
 import exception.InvalidCredentialsException;
 import model.User;
+import model.enums.UserRole;
 import repository.UserRepository;
 import util.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class AuthService {
     private UserRepository userRepository;
@@ -18,9 +20,6 @@ public class AuthService {
     }
 
     public User register() {
-
-
-
 
 
         String fullName =  inputUtils.readString("Fullname:");
@@ -46,13 +45,19 @@ public class AuthService {
             throw new IllegalArgumentException("password must contain at least 6 characters");
         }
 
+        byte[] salt = PasswordUtils.generateSalt();
 
+        String passwordHash =
+                PasswordUtils.hashPassword(password, salt);
 
         User user = new User(
+                UUID.randomUUID(),
                 fullName,
                 email,
                 phone,
-                password
+                UserRole.CLIENT,
+                passwordHash,
+                salt
         );
 
         userRepository.create(user);
@@ -71,7 +76,7 @@ public class AuthService {
             throw new InvalidCredentialsException("Invalid credentials.");
         }
         String password = inputUtils.readString("Password:");
-        if (!user.get().getPassword().equals(password)) {
+        if (!user.get().getPasswordHash().equals(PasswordUtils.hashPassword(password,user.get().getSalt()))) {
             throw new InvalidCredentialsException("Invalid credentials.");
         }
 
@@ -79,12 +84,12 @@ public class AuthService {
 
         return currentUser;
     }
-//    public User autoLogin() {
-//        Optional<User> user = userRepository.findByEmail("y@gmail.com");
-//        currentUser = user.get();
-//
-//        return currentUser;
-//    }
+    public User autoLogin() {
+        Optional<User> user = userRepository.findByEmail("youssef@gmail.com");
+        currentUser = user.get();
+
+        return currentUser;
+    }
 
     public void logout() {
         currentUser = null;

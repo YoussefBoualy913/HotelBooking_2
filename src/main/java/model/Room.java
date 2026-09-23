@@ -3,9 +3,10 @@ import model.enums.RoomStatus;
 import model.enums.RoomType;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class Room {
-
+    private UUID id;
     private String roomNumber;
     private RoomType type;
     private int capacity;
@@ -13,19 +14,23 @@ public class Room {
     private RoomStatus status;
 
     public Room(
+            UUID id,
             String roomNumber,
             RoomType type,
             int capacity,
             BigDecimal pricePerNight,
             RoomStatus status
     ) {
+        this.id = id;
         this.roomNumber = roomNumber;
         this.type = type;
         this.capacity = capacity;
         this.pricePerNight = pricePerNight;
         this.status = status;
     }
-
+   public UUID getId() {
+        return id;
+   }
     public String getRoomNumber() {
         return roomNumber;
     }

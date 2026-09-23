@@ -8,17 +8,17 @@ public class User {
     private String fullName;
     private String email;
     private String phone;
-    private String password;
+    private String passwordHash;
     private UserRole role;
-
-    public User(String fullName, String email, String phone, String password) {
-
+    private byte[] salt;
+    public User(UUID id,String fullName, String email, String phone,UserRole userRole, String passwordHash,byte[] salt) {
+        this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
-        this.id = UUID.randomUUID();
-        this.password = password;
-        this.role = UserRole.CLIENT;
+        this.role = userRole;
+        this.passwordHash = passwordHash;
+        this.salt = salt;
     }
 
     public UUID getId() {
@@ -49,12 +49,12 @@ public class User {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswordHash(String password) {
+        this.passwordHash = password;
     }
 
     public UserRole getRole() {
@@ -63,6 +63,12 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+    public byte[] getSalt() {
+        return salt;
+    }
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
     }
 
     public boolean isAdmin() {

@@ -11,34 +11,39 @@ public class Reservation {
     private UUID id;
     private String reservationCode;
     private UUID userId;
-    private String roomNumber;
+    private UUID roomId;
     private LocalDate checkIn;
     private LocalDate checkOut;
     private int numberOfGuests;
+    private int numberOfNights;
     private BigDecimal totalPrice;
     private ReservationStatus status;
     private LocalDateTime createdAt;
 
     public Reservation(
+            UUID id,
             UUID userId,
             String reservationCode,
-            String roomNumber,
+            UUID roomId,
             LocalDate checkIn,
             LocalDate checkOut,
             int numberOfGuests,
-            long numberOfNights,
-            BigDecimal totalPrice
+            int numberOfNights,
+            BigDecimal totalPrice,
+            ReservationStatus status,
+            LocalDateTime createdAt
     ) {
-        this.id = UUID.randomUUID();
+        this.id = id;
         this.userId = userId;
         this.reservationCode = reservationCode;
-        this.roomNumber = roomNumber;
+        this.roomId = roomId;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.numberOfGuests = numberOfGuests;
+        this.numberOfNights = numberOfNights;
         this.totalPrice = totalPrice;
-        this.status = ReservationStatus.CONFIRMED;
-        this.createdAt = LocalDateTime.now();
+        this.status = status;
+        this.createdAt = createdAt;
     }
 
     public UUID getId() {
@@ -57,8 +62,8 @@ public class Reservation {
         return userId;
     }
 
-    public String getRoomNumber() {
-        return roomNumber;
+    public UUID getRoomId() {
+        return roomId;
     }
 
     public LocalDate getCheckIn() {
@@ -84,6 +89,12 @@ public class Reservation {
     public void setNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
+    public int getNumberOfNights() {
+        return numberOfNights;
+    }
+    public void setNumberOfNights(int numberOfNights) {
+        this.numberOfNights = numberOfNights;
+    }
 
     public BigDecimal getTotalPrice() {
         return totalPrice;
@@ -108,7 +119,7 @@ public class Reservation {
     @Override
     public String toString() {
         return "Code: " + reservationCode +
-                " | Room: " + roomNumber +
+                " | Room: " + roomId +
                 " | Check-in: " + checkIn +
                 " | Check-out: " + checkOut +
                 " | Guests: " + numberOfGuests +
