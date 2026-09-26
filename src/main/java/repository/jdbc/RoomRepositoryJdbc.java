@@ -1,8 +1,11 @@
 package repository.jdbc;
 
 import db.DatabaseConnection;
+import dto.AvailableRoomDTO;
+import dto.RoomSearchCriteria;
 import model.Room;
 import repository.RoomRepository;
+import repository.jdbc.mapper.AvailableRoomMapper;
 import repository.jdbc.mapper.RoomMapper;
 import repository.jdbc.mapper.UserMapper;
 
@@ -11,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class RoomRepositoryJdbc implements RoomRepository {
 
@@ -122,7 +126,7 @@ public class RoomRepositoryJdbc implements RoomRepository {
         }
     }
 
-    public List<Room> findAvailableRooms(int finalGuestsNumber, LocalDate checkIn, LocalDate checkOut){
+    public List<AvailableRoomDTO> findAvailableRooms(RoomSearchCriteria roomSearchCriteria){
         String sql = """
             SELECT r.id,
                    r.room_number,
@@ -143,18 +147,56 @@ public class RoomRepositoryJdbc implements RoomRepository {
                     );
         """;
         try (PreparedStatement ps = connection.prepareStatement(sql)){
-            ps.setInt(1, finalGuestsNumber);
-            ps.setDate(2, Date.valueOf(checkOut));
-            ps.setDate(3, Date.valueOf(checkIn));
-            List<Room> rooms = new ArrayList<>();
+            ps.setInt(1, roomSearchCriteria.getNumberOfGuests());
+            ps.setDate(2, Date.valueOf(roomSearchCriteria.getCheckOut()));
+            ps.setDate(3, Date.valueOf(roomSearchCriteria.getCheckIn()));
+            List<AvailableRoomDTO> availableRoomsDTO = new ArrayList<>();
             try (ResultSet rs = ps.executeQuery()) {
                 while(rs.next()){
-                    rooms.add(RoomMapper.map(rs));
+                    availableRoomsDTO.add(AvailableRoomMapper.map(rs,roomSearchCriteria));
                 }
             }
-           return rooms;
+           return availableRoomsDTO;
         }catch (SQLException e){
             throw new RuntimeException("Erreur lors  de chargement de room", e);
         }
+    }
+
+    @Override
+    public boolean isRoomAvailable(
+            UUID roomId,
+            LocalDate checkIn,
+            LocalDate checkOut) {
+
+        String sql = """
+        SELECT NOT EXISTS (
+            SELECT 1
+            FROM reservations
+            WHERE room_id = ?
+              AND status = 'CONFIRMED'
+              AND check_in < ?
+              AND check_out > ?
+        )
+        """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setObject(1, roomId);
+            ps.setDate(2, Date.valueOf(checkOut));
+            ps.setDate(3, Date.valueOf(checkIn));
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getBoolean(1);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(
+                    "Error checking room availability", e
+            );
+        }
+
+        return false;
     }
     }

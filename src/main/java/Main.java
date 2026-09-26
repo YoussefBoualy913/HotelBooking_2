@@ -1,11 +1,12 @@
 import config.DatabaseInitializer;
 import model.User;
+import repository.InvoiceRepository;
+import repository.PaymentRepository;
 import repository.ReservationRepository;
 import repository.RoomRepository;
-import repository.jdbc.ReservationRepositoryJdbc;
-import repository.jdbc.RoomRepositoryJdbc;
-import repository.jdbc.UserRepositoryJdbc;
+import repository.jdbc.*;
 import service.AuthService;
+import service.ReservationService;
 import service.RoomService;
 import service.UserService;
 import util.InputUtils;
@@ -19,9 +20,12 @@ public class Main {
         UserRepositoryJdbc userRepository = new UserRepositoryJdbc();
         RoomRepository roomRepository = new RoomRepositoryJdbc();
        ReservationRepository reservationRepository = new ReservationRepositoryJdbc();
+       PaymentRepository paymentRepository = new PaymentRepositoryJdbc();
+       InvoiceRepository invoiceRepository = new InvoiceRepositoryJdbc();
 //        InputUtils inputUtils = new InputUtils();
           AuthService authService = new AuthService(userRepository, inputUtils);
-//        AuthServiceReservationService authServiceReservationService = new AuthServiceReservationService(reservationRepository, authService);
+        ReservationService reservationService = new ReservationService(reservationRepository, authService,inputUtils,
+                paymentRepository, invoiceRepository);
        UserService userService = new UserService(userRepository,authService,inputUtils);
         RoomService roomService = new RoomService(roomRepository, reservationRepository, inputUtils);
 //
@@ -29,7 +33,9 @@ public class Main {
         GuestView guestView = new GuestView(authService, inputUtils);
 //        ClientView clientView = new ClientView(authService,
 //                roomService,authServiceReservationService,roomRepository,inputUtils,userService);
-       AdminView adminView = new AdminView(authService,roomService,inputUtils,roomRepository,userService);
+       AdminView adminView = new AdminView(authService,roomService,inputUtils,
+               roomRepository,userService,reservationService
+               );
         authService.autoLogin();
 
         boolean running = true;

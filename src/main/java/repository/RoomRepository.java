@@ -1,10 +1,13 @@
 package repository;
 
+import dto.AvailableRoomDTO;
+import dto.RoomSearchCriteria;
 import model.Room;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface RoomRepository {
     Room save(Room room);
@@ -12,6 +15,7 @@ public interface RoomRepository {
     List<Room> findAll();
     void update(Room room);
     void putRoomInMaintenance(Room room);
-    List<Room> findAvailableRooms(int finalGuestsNumber, LocalDate checkIn,LocalDate checkOut);
+    List<AvailableRoomDTO> findAvailableRooms(RoomSearchCriteria roomSearchCriteria);
+    boolean isRoomAvailable(UUID roomNumber, LocalDate checkIn, LocalDate checkOut);
    // void delete(Room room);
 }

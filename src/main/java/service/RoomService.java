@@ -1,4 +1,6 @@
 package service;
+import dto.AvailableRoomDTO;
+import dto.RoomSearchCriteria;
 import exception.RoomNotFoundException;
 import model.Room;
 import model.enums.RoomStatus;
@@ -109,7 +111,7 @@ public class RoomService {
             checkOut = inputUtils.readDate("Check-out (YYYY-MM-DD): ");
 
             if (!ValidationUtils.isValidDateRange(checkIn, checkOut)) {
-                System.out.println("Check-in must be before check-out.");
+                System.out.println("Check-in must be before check-out and cannot be in the past.");
                 continue;
             }
             break;
@@ -126,10 +128,9 @@ public class RoomService {
             }
 
         } while (guestsNumber < 1);
-        final int finalGuestsNumber = guestsNumber;
 
-
-        List<Room> availableRooms = roomRepository.findAvailableRooms(finalGuestsNumber,checkIn,checkOut);
+        RoomSearchCriteria roomSearchCriteria  = new RoomSearchCriteria(checkIn,checkOut,guestsNumber);
+        List<AvailableRoomDTO> availableRooms = roomRepository.findAvailableRooms(roomSearchCriteria);
 
         if (availableRooms.isEmpty()) {
             System.out.println("No rooms available for the selected period.");

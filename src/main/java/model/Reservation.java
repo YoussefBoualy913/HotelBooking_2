@@ -16,34 +16,27 @@ public class Reservation {
     private LocalDate checkOut;
     private int numberOfGuests;
     private int numberOfNights;
-    private BigDecimal totalPrice;
     private ReservationStatus status;
     private LocalDateTime createdAt;
 
     public Reservation(
             UUID id,
             UUID userId,
-            String reservationCode,
             UUID roomId,
             LocalDate checkIn,
             LocalDate checkOut,
             int numberOfGuests,
             int numberOfNights,
-            BigDecimal totalPrice,
-            ReservationStatus status,
-            LocalDateTime createdAt
+            ReservationStatus status
     ) {
         this.id = id;
         this.userId = userId;
-        this.reservationCode = reservationCode;
         this.roomId = roomId;
         this.checkIn = checkIn;
         this.checkOut = checkOut;
         this.numberOfGuests = numberOfGuests;
         this.numberOfNights = numberOfNights;
-        this.totalPrice = totalPrice;
         this.status = status;
-        this.createdAt = createdAt;
     }
 
     public UUID getId() {
@@ -96,13 +89,6 @@ public class Reservation {
         this.numberOfNights = numberOfNights;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
 
     public ReservationStatus getStatus() {
         return status;
@@ -115,6 +101,9 @@ public class Reservation {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     @Override
     public String toString() {
@@ -123,7 +112,6 @@ public class Reservation {
                 " | Check-in: " + checkIn +
                 " | Check-out: " + checkOut +
                 " | Guests: " + numberOfGuests +
-                " | Total: " + totalPrice + " MAD" +
                 " | Status: " + status;
     }
 }

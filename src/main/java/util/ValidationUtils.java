@@ -23,6 +23,6 @@ public class ValidationUtils {
     }
 
     public static boolean isValidDateRange(LocalDate checkIn, LocalDate checkOut) {
-        return checkOut.isAfter(checkIn);
+        return checkOut.isAfter(checkIn) && checkIn.isAfter(LocalDate.now().minusDays(1));
     }
 }

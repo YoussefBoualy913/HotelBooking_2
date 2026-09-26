@@ -5,23 +5,24 @@ import java.util.UUID;
 
 public class Invoice {
     private UUID id;
-    private UUID reservationId;
+    private UUID paymentId;
     private String invoiceNumber;
-    private BigDecimal subtotalHT;
-    private BigDecimal vat;
+    private BigDecimal totalHT;
+    private BigDecimal vatRate;
+    private BigDecimal vatAmount;
     private BigDecimal totalTTC;
 
-    public Invoice(UUID  reservationId,
-                   String invoiceNumber,
-                   BigDecimal subtotalHT,
-                   BigDecimal vat,
+    public Invoice(UUID id,
+                   BigDecimal totalHT,
+                   BigDecimal vatRate,
+                   BigDecimal vatAmount,
                    BigDecimal totalTTC) {
-        this.id = UUID.randomUUID();
-        this.reservationId = reservationId;
-        this.invoiceNumber = invoiceNumber;
-        this.subtotalHT = subtotalHT;
-        this.vat = vat;
+        this.id =id;
+        this.totalHT = totalHT;
+        this.vatRate = vatRate;
+        this.vatAmount = vatAmount;
         this.totalTTC = totalTTC;
+
     }
     public UUID getId() {
         return id;
@@ -29,11 +30,11 @@ public class Invoice {
     public void setId(UUID id) {
         this.id = id;
     }
-    public UUID getReservationId() {
-        return reservationId;
+    public UUID getPaymentId() {
+        return paymentId;
     }
-    public void setReservationId(UUID reservationId) {
-        this.reservationId = reservationId;
+    public void setPaymentId(UUID reservationId) {
+        this.paymentId = reservationId;
     }
     public String getInvoiceNumber() {
         return invoiceNumber;
@@ -41,17 +42,17 @@ public class Invoice {
     public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
     }
-    public BigDecimal getSubtotalHT() {
-        return subtotalHT;
+    public BigDecimal getTotalHT() {
+        return totalHT;
     }
-    public void setSubtotalHT(BigDecimal subtotalHT) {
-        this.subtotalHT = subtotalHT;
+    public void setTotalHT(BigDecimal totalHT) {
+        this.totalHT = totalHT;
     }
-    public BigDecimal getVat() {
-        return vat;
+    public BigDecimal getVatAmount() {
+        return vatAmount;
     }
-    public void setVat(BigDecimal vat) {
-        this.vat = vat;
+    public void setVatAmount(BigDecimal vatAmount) {
+        this.vatAmount = vatAmount;
     }
     public BigDecimal getTotalTTC() {
         return totalTTC;
@@ -59,6 +60,14 @@ public class Invoice {
     public void setTotalTTC(BigDecimal totalTTC) {
         this.totalTTC = totalTTC;
     }
+    public BigDecimal getVatRate() {
+        return vatRate;
+    }
+    public void setVatRate(BigDecimal vatRate) {
+        this.vatRate = vatRate;
+    }
+
+
     @Override
     public String toString() {
         return "";

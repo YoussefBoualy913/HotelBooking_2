@@ -19,18 +19,20 @@ public class AdminView {
     private final InputUtils inputUtils;
     private final AuthService authService;
     private final RoomRepository roomRepository;
-    //private final ReservationService reservationService;
+    private final ReservationService reservationService;
 
     public AdminView(AuthService authService,
                      RoomService roomService,
                      InputUtils inputUtils,
                      RoomRepository roomRepository,
-                     UserService userService) {
+                     UserService userService,
+                     ReservationService reservationService) {
         this.roomService = roomService;
         this.inputUtils = inputUtils;
         this.authService = authService;
         this.roomRepository = roomRepository;
         this.userService = userService;
+        this.reservationService = reservationService;
 
     }
     public  void showAdminMenu() {
@@ -183,15 +185,15 @@ public class AdminView {
                         }
                     }
 
-//                case 2:
-//                    while (true) {
-//                        showReservationMenu();
-//                        int choice2 = inputUtils.readInt("");
-//                        switch (choice2) {
+                case 2:
+                    while (true) {
+                        showReservationMenu();
+                        int choice2 = inputUtils.readInt("");
+                        switch (choice2) {
 //                            case 1:
 //                                  try {
 //                                      List<Reservation> reservations =
-//                                              authServiceReservationService.getMyReservations(authService);
+//                                              ReservationService.getMyReservations(authService);
 //
 //                                      if (reservations.isEmpty()) {
 //                                          System.out.println("You have no reservations.");
@@ -205,7 +207,7 @@ public class AdminView {
 //                                  break;
 //                            case 2:
 //                                try {
-//                                    List<Reservation> reservations = authServiceReservationService.getAllReservations();
+//                                    List<Reservation> reservations = ReservationService.getAllReservations();
 //
 //                                    if (reservations.isEmpty()) {
 //                                        System.out.println("No reservation found.");
@@ -216,42 +218,42 @@ public class AdminView {
 //                                    System.out.println(e.getMessage());
 //                                }
 //                                break;
-//                            case 3:
-//                                try {
-//                                    authServiceReservationService.createReservation(authService.getCurrentUser(),roomRepository);
-//                                    System.out.println("Reservation Created");
-//                                }catch (Exception e){
-//                                    System.out.println("errur:"+e.getMessage());
-//                                }
-//                                break;
+                            case 3:
+                                try {
+                                    reservationService.createReservation(authService.getCurrentUser(),roomRepository);
+                                    System.out.println("Reservation Created successfully");
+                                }catch (Exception e){
+                                    System.out.println("errur:"+e.getMessage());
+                                }
+                                break;
 //                            case 4:
 //                                try {
-//                                   authServiceReservationService.updateReservation(authService,roomRepository);
+//                                   ReservationService.updateReservation(authService,roomRepository);
 //                                   System.out.println("Reservation Updated");
 //                                }catch (Exception e){
 //                                    System.out.println("errur:"+e.getMessage());
 //                                }
 //                            case 5:
 //                                try {
-//                                    authServiceReservationService.reservationDetailes(authService);
+//                                    ReservationService.reservationDetailes(authService);
 //                                }catch (Exception e){
 //                                    System.out.println("errur:"+e.getMessage());
 //                                }
 //                                break;
 //                            case 6:
 //                                try {
-//                                    authServiceReservationService.cancelReservation();
+//                                    ReservationService.cancelReservation();
 //                                    System.out.println("Reservation Cancelled");
 //                                }catch (Exception e){
 //                                    System.out.println("errur:"+e.getMessage());
 //                                }
 //                                break;
-//                            case 0:
-//                                return true;
-//                            default:
-//                                System.out.println("Wrong choice");
-//                        }
-//                    }
+                            case 0:
+                                return true;
+                            default:
+                                System.out.println("Wrong choice");
+                        }
+                    }
 //
 //                case 3:
 //                    while (true) {
