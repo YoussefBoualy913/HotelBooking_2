@@ -1,6 +1,7 @@
 package model;
 import model.enums.UserRole;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 public class User {
 
@@ -8,6 +9,7 @@ public class User {
     private String fullName;
     private String email;
     private String phone;
+    private BigDecimal balance = BigDecimal.valueOf(20000);
     private String passwordHash;
     private UserRole role;
     private byte[] salt;
@@ -70,6 +72,13 @@ public class User {
     public void setSalt(byte[] salt) {
         this.salt = salt;
     }
+    public BigDecimal getBalance() {
+        return balance;
+    }
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
 
     public boolean isAdmin() {
         return role == UserRole.ADMIN;
@@ -82,6 +91,7 @@ public class User {
                 ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
+                ", sold=" + balance +
                 '}';
     }
 }

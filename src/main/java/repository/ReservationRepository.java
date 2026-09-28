@@ -9,10 +9,10 @@ import java.util.UUID;
 public interface ReservationRepository {
     Reservation save(Reservation reservation);
 
-    Optional<Reservation> findById(UUID id);
+    Optional<Reservation> findByCode(String reservationCode);
 
     List<Reservation> findAll();
-
+    List<Reservation> findByUserId(UUID userId);
     boolean existsByCode(String reservationCode);
 
     void update(Reservation reservation);

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class RefundPolicy {
 
-    public BigDecimal calculateRefund(
+    public static BigDecimal calculateRefund(
             BigDecimal totalAmount,
             LocalDateTime checkIn
     ) {

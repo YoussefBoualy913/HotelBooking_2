@@ -11,7 +11,7 @@ import service.RoomService;
 import service.UserService;
 import util.InputUtils;
 import view.AdminView;
-//import view.ClientView;
+import view.ClientView;
 import view.GuestView;
 
 public class Main {
@@ -22,21 +22,20 @@ public class Main {
        ReservationRepository reservationRepository = new ReservationRepositoryJdbc();
        PaymentRepository paymentRepository = new PaymentRepositoryJdbc();
        InvoiceRepository invoiceRepository = new InvoiceRepositoryJdbc();
-//        InputUtils inputUtils = new InputUtils();
+
           AuthService authService = new AuthService(userRepository, inputUtils);
         ReservationService reservationService = new ReservationService(reservationRepository, authService,inputUtils,
-                paymentRepository, invoiceRepository);
+                paymentRepository, invoiceRepository,userRepository);
        UserService userService = new UserService(userRepository,authService,inputUtils);
         RoomService roomService = new RoomService(roomRepository, reservationRepository, inputUtils);
-//
-//        authServiceReservationService.updateExpiredReservations(reservationRepository);
+
         GuestView guestView = new GuestView(authService, inputUtils);
-//        ClientView clientView = new ClientView(authService,
-//                roomService,authServiceReservationService,roomRepository,inputUtils,userService);
+        ClientView clientView = new ClientView(authService,
+                roomService,reservationService,roomRepository,inputUtils,userService);
        AdminView adminView = new AdminView(authService,roomService,inputUtils,
                roomRepository,userService,reservationService
                );
-        authService.autoLogin();
+        //authService.autoLogin();
 
         boolean running = true;
 
@@ -49,7 +48,7 @@ public class Main {
             } else if (user.isAdmin()) {
                 running = adminView.show();
             } else {
-                //running = clientView.show(user);
+                running = clientView.show(user);
             }
         }
     }

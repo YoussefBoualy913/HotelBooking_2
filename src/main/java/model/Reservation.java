@@ -108,10 +108,10 @@ public class Reservation {
     @Override
     public String toString() {
         return "Code: " + reservationCode +
-                " | Room: " + roomId +
                 " | Check-in: " + checkIn +
                 " | Check-out: " + checkOut +
                 " | Guests: " + numberOfGuests +
+                " | number Of Nights: " + numberOfNights +
                 " | Status: " + status;
     }
 }

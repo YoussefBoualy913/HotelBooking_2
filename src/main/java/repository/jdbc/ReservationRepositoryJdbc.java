@@ -1,10 +1,14 @@
 package repository.jdbc;
 
 import db.DatabaseConnection;
+import exception.ReservationNotFoundException;
 import model.Reservation;
+import model.enums.ReservationStatus;
 import repository.ReservationRepository;
+import repository.jdbc.mapper.ResrvationMapper;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -76,13 +80,31 @@ public class ReservationRepositoryJdbc implements ReservationRepository {
     }
 
     @Override
-    public Optional<Reservation> findById(UUID id) {
-        return Optional.empty();
-    }
+    public Optional<Reservation> findByCode(String reservationCode) {
+        String sql = """
+            SELECT *
+            FROM reservations
+            WHERE reservation_code = ?
+            """;
 
-    @Override
-    public List<Reservation> findAll() {
-        return List.of();
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, reservationCode);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(ResrvationMapper.mapRowToReservation(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(
+                    "Error finding reservation by code",
+                    e
+            );
+        }
+
+        return Optional.empty();
     }
 
     @Override
@@ -96,8 +118,75 @@ public class ReservationRepositoryJdbc implements ReservationRepository {
     }
 
     @Override
-    public void cancel(UUID id) {
+    public List<Reservation> findByUserId(UUID userId) {
+      String sql= """
+               select * from reservations 
+               where user_id = ? and status <> ?
+               """;
+       try (PreparedStatement statement = connection.prepareStatement(sql)){
 
+           statement.setObject(1,userId);
+           statement.setObject(2,ReservationStatus.CANCELLED.name());
+           try (ResultSet rs = statement.executeQuery()){
+               List<Reservation> reservations = new ArrayList<>();
+               while (rs.next()) {
+                   reservations.add(ResrvationMapper.mapRowToReservation(rs));
+               }
+               return reservations;
+           }
+       } catch (SQLException e) {
+           throw new RuntimeException("errur lore de chargement des reservations"+e);
+       }
+    }
+    public List<Reservation> findAll() {
+      String  sql = """
+                select * from reservations
+                where status <> ?
+                """;
+        try (PreparedStatement statement= connection.prepareStatement(sql)){
+
+           statement.setObject(1, ReservationStatus.CANCELLED.name());
+           try (ResultSet rs = statement.executeQuery()){
+               List<Reservation> reservations = new ArrayList<>();
+               while (rs.next()) {
+                   reservations.add(ResrvationMapper.mapRowToReservation(rs));
+               }
+               return reservations;
+           }
+
+        }catch (SQLException e){
+            throw new RuntimeException("errur lore de chargement des reservations"+e);
+        }
+    }
+    @Override
+    public void cancel(UUID id) {
+        String sql = """
+            UPDATE reservations
+            SET status = ?
+            WHERE id = ?
+              AND status <> ?
+            """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, ReservationStatus.CANCELLED.name());
+            statement.setObject(2, id);
+            statement.setString(3, ReservationStatus.CANCELLED.name());
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                throw new ReservationNotFoundException(
+                        "Reservation not found or already cancelled: " + id
+                );
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(
+                    "Error cancelling reservation",
+                    e
+            );
+        }
     }
 
     @Override

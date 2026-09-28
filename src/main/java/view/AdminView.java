@@ -66,9 +66,8 @@ public class AdminView {
         System.out.println("1. My reservations");
         System.out.println("2. View all reservations");
         System.out.println("3. Create reservation");
-        System.out.println("4. update reservation");
-        System.out.println("5. Reservation details");
-        System.out.println("6. cancel reservation");
+        System.out.println("4. Reservation details");
+        System.out.println("5. cancel reservation");
         System.out.println("0. Exit");
         System.out.print("Choice: ");
     }
@@ -190,34 +189,34 @@ public class AdminView {
                         showReservationMenu();
                         int choice2 = inputUtils.readInt("");
                         switch (choice2) {
-//                            case 1:
-//                                  try {
-//                                      List<Reservation> reservations =
-//                                              ReservationService.getMyReservations(authService);
-//
-//                                      if (reservations.isEmpty()) {
-//                                          System.out.println("You have no reservations.");
-//                                      } else {
-//                                          System.out.println("You have " + reservations.size() + " reservations.");
-//                                          reservations.forEach(System.out::println);
-//                                      }
-//                                  }catch (Exception e) {
-//                                      System.out.println(e.getMessage());
-//                                  }
-//                                  break;
-//                            case 2:
-//                                try {
-//                                    List<Reservation> reservations = ReservationService.getAllReservations();
-//
-//                                    if (reservations.isEmpty()) {
-//                                        System.out.println("No reservation found.");
-//                                    } else {
-//                                        reservations.forEach(System.out::println);
-//                                    }
-//                                }catch(Exception e) {
-//                                    System.out.println(e.getMessage());
-//                                }
-//                                break;
+                            case 1:
+                                  try {
+                                      List<Reservation> reservations =
+                                              reservationService.getMyReservations();
+
+                                      if (reservations.isEmpty()) {
+                                          System.out.println("You have no reservations.");
+                                      } else {
+                                          System.out.println("You have " + reservations.size() + " reservations.");
+                                          reservations.forEach(System.out::println);
+                                      }
+                                  }catch (Exception e) {
+                                      System.out.println(e.getMessage());
+                                  }
+                                  break;
+                            case 2:
+                                try {
+                                    List<Reservation> reservations = reservationService.getAllReservations();
+
+                                    if (reservations.isEmpty()) {
+                                        System.out.println("No reservation found.");
+                                    } else {
+                                        reservations.forEach(System.out::println);
+                                    }
+                                }catch(Exception e) {
+                                    System.out.println(e.getMessage());
+                                }
+                                break;
                             case 3:
                                 try {
                                     reservationService.createReservation(authService.getCurrentUser(),roomRepository);
@@ -226,60 +225,65 @@ public class AdminView {
                                     System.out.println("errur:"+e.getMessage());
                                 }
                                 break;
-//                            case 4:
-//                                try {
-//                                   ReservationService.updateReservation(authService,roomRepository);
-//                                   System.out.println("Reservation Updated");
-//                                }catch (Exception e){
-//                                    System.out.println("errur:"+e.getMessage());
-//                                }
-//                            case 5:
-//                                try {
-//                                    ReservationService.reservationDetailes(authService);
-//                                }catch (Exception e){
-//                                    System.out.println("errur:"+e.getMessage());
-//                                }
-//                                break;
-//                            case 6:
-//                                try {
-//                                    ReservationService.cancelReservation();
-//                                    System.out.println("Reservation Cancelled");
-//                                }catch (Exception e){
-//                                    System.out.println("errur:"+e.getMessage());
-//                                }
-//                                break;
+                            case 4:
+                                try {
+                                    String reservationCode =  inputUtils.readString("Reservation code: ");
+                                    Reservation reservation  = reservationService.reservationDetailes(reservationCode);
+                                    System.out.println();
+                                    System.out.println("⫷ RESERVATION DETAILS ⫸\n" +
+                                            "* Code:" +reservation.getReservationCode()+"\n"+
+                                            "* User:" +authService.getCurrentUser().getFullName()+"\n"+
+                                            "* Check-in:" +reservation.getCheckIn()+"\n"+
+                                            "* Check-out:" +reservation.getCheckOut()+"\n"+
+                                            "* Guests:" +reservation.getNumberOfGuests()+"\n"+
+                                            "* Nights:" +reservation.getNumberOfNights()+"\n"+
+                                            "* Status:" +reservation.getStatus()+"\n"+
+                                            "* Reserver at:"+reservation.getCreatedAt()+"\n"+
+                                            "");
+                                }catch (Exception e){
+                                    System.out.println("errur:"+e.getMessage());
+                                }
+                                break;
+                            case 5:
+                                try {
+                                    reservationService.cancelReservation();
+                                    System.out.println("Reservation Cancelled successfully !");
+                                }catch (Exception e){
+                                    System.out.println("errur:"+e.getMessage());
+                                }
+                                break;
                             case 0:
                                 return true;
                             default:
                                 System.out.println("Wrong choice");
                         }
                     }
-//
-//                case 3:
-//                    while (true) {
-//                        showUsersMenu();
-//                        int choice3 = inputUtils.readInt("");
-//                        switch (choice3) {
-//                            case 1:
-//                                try {
-//                                    List<User> users = userService.getAllUsers();
-//
-//                                    if (users.isEmpty()) {
-//                                        System.out.println("No users found.");
-//                                    } else {
-//                                        users.forEach(System.out::println);
-//                                    }
-//
-//                                } catch (Exception e) {
-//                                    System.out.println("Error: " + e.getMessage());
-//                                }
-//                                break;
-//                            case 0:
-//                                return true;
-//                            default:
-//                                System.out.println("Wrong choice");
-//                        }
-//                    }
+
+                case 3:
+                    while (true) {
+                        showUsersMenu();
+                        int choice3 = inputUtils.readInt("");
+                        switch (choice3) {
+                            case 1:
+                                try {
+                                    List<User> users = userService.getAllUsers();
+
+                                    if (users.isEmpty()) {
+                                        System.out.println("No users found.");
+                                    } else {
+                                        users.forEach(System.out::println);
+                                    }
+
+                                } catch (Exception e) {
+                                    System.out.println("Error: " + e.getMessage());
+                                }
+                                break;
+                            case 0:
+                                return true;
+                            default:
+                                System.out.println("Wrong choice");
+                        }
+                    }
                 case 4:
                     while (true) {
                         showProfileMenu();

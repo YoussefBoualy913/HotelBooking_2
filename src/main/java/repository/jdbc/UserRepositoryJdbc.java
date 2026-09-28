@@ -1,16 +1,20 @@
 package repository.jdbc;
 
 import db.DatabaseConnection;
+import exception.UserNotFoundException;
 import model.Room;
 import model.User;
 import model.enums.UserRole;
 import repository.UserRepository;
 import repository.jdbc.mapper.UserMapper;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,7 +53,7 @@ public class UserRepositoryJdbc implements UserRepository {
 
         String sql = """
             SELECT id, fullname, email, phone,
-                   passwordhash, salt, role
+                   passwordhash, salt, role,balance
             FROM users
             WHERE email = ?
             """;
@@ -136,4 +140,46 @@ public class UserRepositoryJdbc implements UserRepository {
     }
 
 
+    public void updateBalance(User user, BigDecimal newBalance) {
+        String sql = """
+            UPDATE users
+            SET balance = ?
+            WHERE id = ?
+            """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setBigDecimal(1, newBalance);
+            statement.setObject(2, user.getId());
+
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                throw new UserNotFoundException("User not found: " + user.getId());
+            }
+
+            user.setBalance(newBalance);
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating user balance", e);
+        }
+    }
+
+    @Override
+    public List<User> findAll() {
+       String sql = """
+                select * from users """;
+        try (PreparedStatement statement = connection.prepareStatement(sql)){
+
+            try(ResultSet rs = statement.executeQuery()){
+                List<User> users = new ArrayList<>();
+                while (rs.next()) {
+                    users.add(UserMapper.map(rs));
+                }
+                return users;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("errur lore de chargement de users"+e);
+        }
+    }
 }

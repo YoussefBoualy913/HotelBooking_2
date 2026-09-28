@@ -11,7 +11,7 @@ public class UserMapper {
 
     public static User map(ResultSet rs) throws SQLException {
 
-        return new User(
+        User user = new User(
                 rs.getObject("id", UUID.class),
                 rs.getString("fullname"),
                 rs.getString("email"),
@@ -20,5 +20,7 @@ public class UserMapper {
                 rs.getString("passwordhash"),
                 rs.getBytes("salt")
         );
+        user.setBalance(rs.getBigDecimal("balance"));
+        return user;
     }
 }

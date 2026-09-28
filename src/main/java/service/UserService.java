@@ -69,14 +69,15 @@ public class UserService {
         currentUser.setSalt(salt);
         userRepository.updatePassword(currentUser);
     }
-//    public List<User> getAllUsers() {
-//        User currentUser = authService.getCurrentUser();
-//        if (currentUser == null || !currentUser.isAdmin()) {
-//            throw new UnauthorizedException(
-//                    "Only administrators can view all users."
-//            );
-//        }
-//
-//        //return userRepository.findAll();
-//    }
+    public List<User> getAllUsers() {
+        User currentUser = authService.getCurrentUser();
+        if (currentUser == null || !currentUser.isAdmin()) {
+            throw new UnauthorizedException(
+                    "Only administrators can view all users."
+            );
+        }
+
+        return userRepository.findAll();
+    }
+
 }
